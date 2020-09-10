@@ -127,7 +127,7 @@ namespace Compiladores_proyecto
 			Text_Box.Enabled = true;
 			guardarToolStripMenuItem.Enabled = true;
 			cerrarToolStripMenuItem.Enabled = true;
-
+			
 			// Abre la ventana para abrir un archivo.
 			openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "Text Files | *.txt"; //Especifica que solo se buscan archivos de texto
@@ -135,6 +135,7 @@ namespace Compiladores_proyecto
 			{
 				ruta_archivo = openFileDialog.FileName; //Setea el string de la ruta
 				Text_Box.LoadFile(openFileDialog.FileName, RichTextBoxStreamType.PlainText); //Carga el texto del archivo en el Text_Box
+				band_guardado = true;
 			}
 
 			// Muestra el nombre del archivo actual en la ventana nomas porque se ve chido
@@ -176,7 +177,9 @@ namespace Compiladores_proyecto
 			return actual;
 		}
 
-
-		
+		private void cambios_realizados(object sender, EventArgs e)
+		{
+			band_guardado = false;
+		}
 	}
 }

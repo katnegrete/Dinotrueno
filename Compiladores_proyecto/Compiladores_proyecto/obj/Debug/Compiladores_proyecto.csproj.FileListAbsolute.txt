@@ -8,3 +8,13 @@ D:\ICIO\Universidad\9Semestre\Compiladores\Proyecto\Primer Avance\Dinotrueno\Com
 D:\ICIO\Universidad\9Semestre\Compiladores\Proyecto\Primer Avance\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.exe
 D:\ICIO\Universidad\9Semestre\Compiladores\Proyecto\Primer Avance\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.pdb
 D:\ICIO\Universidad\9Semestre\Compiladores\Proyecto\Primer Avance\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.Form_Menu.resources
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\bin\Debug\Compiladores_proyecto.exe.config
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\bin\Debug\Compiladores_proyecto.exe
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\bin\Debug\Compiladores_proyecto.pdb
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csprojAssemblyReference.cache
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.Form_Menu.resources
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.Properties.Resources.resources
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csproj.GenerateResource.cache
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csproj.CoreCompileInputs.cache
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.exe
+C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.pdb
