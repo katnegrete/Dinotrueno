@@ -18,3 +18,13 @@ C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Com
 C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csproj.CoreCompileInputs.cache
 C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.exe
 C:\Users\Katia Negrete\Desktop\Compiladores\Dinotrueno\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.pdb
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\bin\Debug\Compiladores_proyecto.exe.config
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\bin\Debug\Compiladores_proyecto.exe
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\bin\Debug\Compiladores_proyecto.pdb
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csprojAssemblyReference.cache
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.Form_Menu.resources
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.Properties.Resources.resources
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csproj.GenerateResource.cache
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.csproj.CoreCompileInputs.cache
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.exe
+D:\ICIO\Universidad\9Semestre\6 Compiladores\Proyecto\2° avance\Dinotrueno-master\Compiladores_proyecto\Compiladores_proyecto\obj\Debug\Compiladores_proyecto.pdb

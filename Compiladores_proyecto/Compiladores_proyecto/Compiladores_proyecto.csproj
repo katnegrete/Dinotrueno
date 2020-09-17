@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorTexto.cs" />
+    <Compile Include="Expresion.cs" />
     <Compile Include="Form_Menu.cs">
       <SubType>Form</SubType>
     </Compile>
