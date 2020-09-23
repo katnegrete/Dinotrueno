@@ -37,6 +37,9 @@
             this.cerrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.Boton_genera_posfija = new System.Windows.Forms.Button();
+            this.Text_Box_posfija = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -45,7 +48,7 @@
             this.Text_Box.BackColor = System.Drawing.Color.Moccasin;
             this.Text_Box.Location = new System.Drawing.Point(12, 27);
             this.Text_Box.Name = "Text_Box";
-            this.Text_Box.Size = new System.Drawing.Size(666, 292);
+            this.Text_Box.Size = new System.Drawing.Size(692, 175);
             this.Text_Box.TabIndex = 0;
             this.Text_Box.Text = "";
             this.Text_Box.TextChanged += new System.EventHandler(this.cambios_realizados);
@@ -59,7 +62,7 @@
             this.archivoToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(800, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(716, 25);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -82,7 +85,7 @@
             this.nuevoToolStripMenuItem.AccessibleName = "nuevo";
             this.nuevoToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
             this.nuevoToolStripMenuItem.Name = "nuevoToolStripMenuItem";
-            this.nuevoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.nuevoToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.nuevoToolStripMenuItem.Text = "Nuevo";
             // 
             // abrirToolStripMenuItem
@@ -90,7 +93,7 @@
             this.abrirToolStripMenuItem.AccessibleName = "abrir";
             this.abrirToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.abrirToolStripMenuItem.Text = "Abrir";
             // 
             // guardarToolStripMenuItem
@@ -98,7 +101,7 @@
             this.guardarToolStripMenuItem.AccessibleName = "guardar";
             this.guardarToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
             this.guardarToolStripMenuItem.Name = "guardarToolStripMenuItem";
-            this.guardarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.guardarToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.guardarToolStripMenuItem.Text = "Guardar";
             // 
             // cerrarToolStripMenuItem
@@ -106,7 +109,7 @@
             this.cerrarToolStripMenuItem.AccessibleName = "cerrar";
             this.cerrarToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
-            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.cerrarToolStripMenuItem.Text = "Cerrar";
             // 
             // openFileDialog
@@ -117,12 +120,44 @@
             // 
             this.saveFileDialog.FileName = "saveFileDialog";
             // 
+            // Boton_genera_posfija
+            // 
+            this.Boton_genera_posfija.BackColor = System.Drawing.Color.YellowGreen;
+            this.Boton_genera_posfija.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.Boton_genera_posfija.Location = new System.Drawing.Point(12, 224);
+            this.Boton_genera_posfija.Name = "Boton_genera_posfija";
+            this.Boton_genera_posfija.Size = new System.Drawing.Size(122, 23);
+            this.Boton_genera_posfija.TabIndex = 2;
+            this.Boton_genera_posfija.Text = "Posfija";
+            this.Boton_genera_posfija.UseVisualStyleBackColor = false;
+            this.Boton_genera_posfija.Click += new System.EventHandler(this.Boton_genera_posfija_Click);
+            // 
+            // Text_Box_posfija
+            // 
+            this.Text_Box_posfija.BackColor = System.Drawing.Color.Moccasin;
+            this.Text_Box_posfija.Location = new System.Drawing.Point(177, 226);
+            this.Text_Box_posfija.Name = "Text_Box_posfija";
+            this.Text_Box_posfija.Size = new System.Drawing.Size(527, 20);
+            this.Text_Box_posfija.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(146, 229);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(16, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "->";
+            // 
             // Form_Menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(210)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(800, 338);
+            this.ClientSize = new System.Drawing.Size(716, 268);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Text_Box_posfija);
+            this.Controls.Add(this.Boton_genera_posfija);
             this.Controls.Add(this.Text_Box);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
@@ -147,6 +182,9 @@
         private System.Windows.Forms.ToolStripMenuItem cerrarToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.Button Boton_genera_posfija;
+        private System.Windows.Forms.TextBox Text_Box_posfija;
+        private System.Windows.Forms.Label label1;
     }
 }
 

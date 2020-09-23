@@ -56,7 +56,17 @@ namespace Compiladores_proyecto
 							activa_controles();
 						}
                     }
-                    else // No hay un archivo abierto, simplemente crea uno nuevo
+                    else if(editor.ruta_archivo != "") // Si ya hay un archivo abierto pero sin cambios sin guardar
+                    {
+						// Primero cierra el archivo
+						editor.cierra_archivo();
+						resetea_controles();
+
+						// Despues crea
+						editor.crea_archivo();
+						activa_controles();
+					}
+                    else // No hay nada abierto
                     {
 						editor.crea_archivo();
 						activa_controles();
@@ -80,8 +90,19 @@ namespace Compiladores_proyecto
 							activa_controles();
 						}
 					}
-					else // No hay un archivo abierto, simplemente abre otro
+					else if(editor.ruta_archivo != "") // Si ya hay archivo abierto pero sin cambios sin guardar.
 					{
+						// Primero cierra
+						editor.cierra_archivo();
+						resetea_controles();
+
+						// Despues abre
+						editor.abre_archivo();
+						Text_Box.LoadFile(editor.open.FileName, RichTextBoxStreamType.PlainText); //Carga el texto del archivo en el Text_Box
+						activa_controles();
+					}
+                    else // No hay nada abierto
+                    {
 						editor.abre_archivo();
 						Text_Box.LoadFile(editor.open.FileName, RichTextBoxStreamType.PlainText); //Carga el texto del archivo en el Text_Box
 						activa_controles();
@@ -113,7 +134,7 @@ namespace Compiladores_proyecto
 		}
 
 		// -<>--<>--<>--<>--<>--<>--<>--<>--<>--<>--<>- FUNCIONES -<>--<>--<>--<>--<>--<>--<>--<>--<>--<>--<>-
-		
+
 		string obten_nombre_archivo_actual(string s)
 		{
 			string actual = "";
@@ -133,23 +154,21 @@ namespace Compiladores_proyecto
 			return actual;
 		}
 
-		private void cambios_realizados(object sender, EventArgs e)
-		{
-			editor.band_guardado = false;
-		}
-
 		public void resetea_controles()
-        {
+		{
 			Text_Box.Clear(); // Vacia el Text_Box
 			this.Text = "Analizador Léxico-Sintáctico";
 
 			Text_Box.Enabled = false;
 			guardarToolStripMenuItem.Enabled = false;
 			cerrarToolStripMenuItem.Enabled = false;
+
+			Boton_genera_posfija.Enabled = false;
+			Text_Box_posfija.Enabled = false;
 		}
 
 		public void activa_controles()
-        {
+		{
 			// Muestra el nombre del archivo actual en la ventana nomas porque se ve chido
 			this.Text = obten_nombre_archivo_actual(editor.ruta_archivo);
 			editor.band_guardado = true;
@@ -157,6 +176,29 @@ namespace Compiladores_proyecto
 			Text_Box.Enabled = true;
 			guardarToolStripMenuItem.Enabled = true;
 			cerrarToolStripMenuItem.Enabled = true;
+
+			Boton_genera_posfija.Enabled = true;
+			Text_Box_posfija.Enabled = true;
 		}
-	}
+
+		// -<>--<>--<>--<>--<>--<>--<>--<>--<>--<>--<>-  EVENTOS  -<>--<>--<>--<>--<>--<>--<>--<>--<>--<>--<>-
+
+		private void cambios_realizados(object sender, EventArgs e)
+		{
+			editor.band_guardado = false;
+		}
+
+        private void Boton_genera_posfija_Click(object sender, EventArgs e)
+        {
+			Expresion exp = new Expresion(); // Inicializa la expresion.
+			exp.expresion = Text_Box.Text; 
+			
+
+			Text_Box_posfija.Clear(); // Resetea el textbox
+
+			exp.expresion = exp.convierte_a_explicita(exp.expresion);
+			Text_Box_posfija.Text = exp.convierte_a_posfija();
+			
+		}
+    }
 }
