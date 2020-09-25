@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Compiladores_proyecto
 {
@@ -114,56 +115,71 @@ namespace Compiladores_proyecto
             string expresion_sin_corchetes = ""; // Cadena que va a quedar con la expresion con los [] cambiados por ()
             string aux_corchetes = ""; // Cadena que solo contiene [...]
             bool band_corchetes = false; // Bandera para poder capturar el contenido de los corchetes
-            string corchetes_explicitos = "("; // Es la cadena en la que va quedar transformado [a-b] -> (a|b)
+            string corchetes_explicitos; // Es la cadena en la que va quedar transformado [a-b] -> (a|b)
             char interior_corchetes = new char(); // Usado para recorrer un "a-d"
+
+            List<string> lista_corchetes = new List<string>(); // Se usa para almacenar todos los pares de corchetes que se van a transformar
+            List<string> lista_parentesis = new List<string>(); // Lista en la que se van a almacenar todos los corchetes ya transformados en () y |
+            int cont_lista_corchetes; // Contador para recorrer la lista de los parentesis 
 
             // Primero se tiene que desglosar los corchetes
             foreach(char c in exp)
             {
-                if (c == '[')
+                if (c == '[') // Cuando lee un [ empieza a capturar
                     band_corchetes = true;
 
                 if (band_corchetes)
                     aux_corchetes += c;
 
-                if (c == ']')
+                if (c == ']') // Cuando lee un ] termina de capturar y almacena en la lista de corchetes
+                {
                     band_corchetes = false;
+                    lista_corchetes.Add(aux_corchetes);
+                    aux_corchetes = "";
+                } 
             }
 
-            // Ya se tiene la cadena con los puros corchetes.
-            // Se checa el tipo, (si es [abcd] o [a-d])
-            if(aux_corchetes.Length-1 > 0)
+            // Ya se tienen las cadenas con los puros corchetes.
+            // Ahora a cada caedna, se le tiene que transformar a su version de () y |
+            foreach(string corchetes in lista_corchetes)
             {
-                if (aux_corchetes[2] == '-') // Se verifica a secas ese indice porque es en donde deberia de estar si es que está en esa forma
+                // Se checa el tipo, (si es [abcd] o [a-d])
+                if (corchetes.Length - 1 > 0)
                 {
-                    interior_corchetes = aux_corchetes[1];
-                    while (interior_corchetes <= aux_corchetes[3])
+                    corchetes_explicitos = "(";
+                    if (corchetes[2] == '-') // Se verifica a secas ese indice porque es en donde deberia de estar si es que está en esa forma
                     {
-                        corchetes_explicitos += interior_corchetes + "|";
-                        interior_corchetes++;
+                        interior_corchetes = corchetes[1];
+                        while (interior_corchetes <= corchetes[3])
+                        {
+                            corchetes_explicitos += interior_corchetes + "|";
+                            interior_corchetes++;
+                        }
                     }
+                    else // Tiene forma de [abcd]
+                    {
+                        // Se recorren los corchetes sin pasar por los mismo corchetes, poniendo caracter | caracter | etc, (queda con un | al final
+                        for (int i = 1; i <= corchetes.Length - 2; i++)
+                            corchetes_explicitos += corchetes[i] + "|";
+                    }
+                    //Se quita el  que sobra al final, se cierra el parentesis y se agrega a la lista de los ya transformados
+                    corchetes_explicitos = corchetes_explicitos.Remove(corchetes_explicitos.Length - 1);
+                    corchetes_explicitos += ")";
+                    lista_parentesis.Add(corchetes_explicitos);
                 }
-                else // Tiene forma de [abcd]
-                {
-                    // Se recorren los corchetes sin pasar por los mismo corchetes, poniendo caracter | caracter | etc, (queda con un | al final
-                    for (int i = 1; i <= aux_corchetes.Length - 2; i++)
-                        corchetes_explicitos += aux_corchetes[i] + "|";
-                }
-                //Se quita el  que sobra al final y se cierra el parentesis
-                corchetes_explicitos = corchetes_explicitos.Remove(corchetes_explicitos.Length-1);
-                corchetes_explicitos += ")";
             }
-            
 
             //Ahora se tienen que reemplazar los corchetes por los parentesis desglosados
             //Se recorre la cadena y se va capturando caracter por caracter hasta encontrar un [, en donde deja de capturar para reemplazar por los () y vuelve a capturar hasta que pasa un ]
             band_corchetes = true;
+            cont_lista_corchetes = 0;
             foreach(char c in exp)
             {
                 if (c == '[')
                 {
                     band_corchetes = false;
-                    expresion_sin_corchetes += corchetes_explicitos;
+                    expresion_sin_corchetes += lista_parentesis[cont_lista_corchetes];
+                    cont_lista_corchetes++;
                 }
 
                 if (band_corchetes)
