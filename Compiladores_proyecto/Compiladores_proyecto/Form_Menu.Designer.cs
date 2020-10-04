@@ -77,7 +77,7 @@
             this.abrirToolStripMenuItem,
             this.guardarToolStripMenuItem,
             this.cerrarToolStripMenuItem});
-			this.archivoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("archivoToolStripMenuItem.Image")));
+			this.archivoToolStripMenuItem.Image = global::Compiladores_proyecto.Properties.Resources.Dinosaur_icon;
 			this.archivoToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.GreenYellow;
 			this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
 			this.archivoToolStripMenuItem.Size = new System.Drawing.Size(79, 21);
@@ -88,7 +88,7 @@
 			// 
 			this.nuevoToolStripMenuItem.AccessibleName = "nuevo";
 			this.nuevoToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
-			this.nuevoToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("nuevoToolStripMenuItem.Image")));
+			this.nuevoToolStripMenuItem.Image = global::Compiladores_proyecto.Properties.Resources.Nuevo;
 			this.nuevoToolStripMenuItem.Name = "nuevoToolStripMenuItem";
 			this.nuevoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.nuevoToolStripMenuItem.Text = "Nuevo";
@@ -97,7 +97,7 @@
 			// 
 			this.abrirToolStripMenuItem.AccessibleName = "abrir";
 			this.abrirToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
-			this.abrirToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("abrirToolStripMenuItem.Image")));
+			this.abrirToolStripMenuItem.Image = global::Compiladores_proyecto.Properties.Resources.Abrir;
 			this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
 			this.abrirToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.abrirToolStripMenuItem.Text = "Abrir";
@@ -106,7 +106,7 @@
 			// 
 			this.guardarToolStripMenuItem.AccessibleName = "guardar";
 			this.guardarToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
-			this.guardarToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("guardarToolStripMenuItem.Image")));
+			this.guardarToolStripMenuItem.Image = global::Compiladores_proyecto.Properties.Resources.Guardar;
 			this.guardarToolStripMenuItem.Name = "guardarToolStripMenuItem";
 			this.guardarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.guardarToolStripMenuItem.Text = "Guardar";
@@ -115,7 +115,7 @@
 			// 
 			this.cerrarToolStripMenuItem.AccessibleName = "cerrar";
 			this.cerrarToolStripMenuItem.BackColor = System.Drawing.Color.GreenYellow;
-			this.cerrarToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("cerrarToolStripMenuItem.Image")));
+			this.cerrarToolStripMenuItem.Image = global::Compiladores_proyecto.Properties.Resources.Cerrar;
 			this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
 			this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.cerrarToolStripMenuItem.Text = "Cerrar";
