@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,6 +16,7 @@ namespace Compiladores_proyecto
 	{
 		// Variables globales
 		EditorTexto editor;
+		AFN automata_afn;
 
 		public Form_Menu()
 		{
@@ -163,8 +165,13 @@ namespace Compiladores_proyecto
 			guardarToolStripMenuItem.Enabled = false;
 			cerrarToolStripMenuItem.Enabled = false;
 
+			Boton_AFN.Enabled = false;
 			Boton_genera_posfija.Enabled = false;
+			Text_Box_posfija.Text = "";
 			Text_Box_posfija.Enabled = false;
+
+			// Limpia el grid
+			limpia_grid();
 		}
 
 		public void activa_controles()
@@ -177,28 +184,79 @@ namespace Compiladores_proyecto
 			guardarToolStripMenuItem.Enabled = true;
 			cerrarToolStripMenuItem.Enabled = true;
 
+			Boton_AFN.Enabled = true;
 			Boton_genera_posfija.Enabled = true;
 			Text_Box_posfija.Enabled = true;
 		}
+		
 
 		// -<>--<>--<>--<>--<>--<>--<>--<>--<>--<>--<>-  EVENTOS  -<>--<>--<>--<>--<>--<>--<>--<>--<>--<>--<>-
 
 		private void cambios_realizados(object sender, EventArgs e)
 		{
+			// Si se realizó un cambio, entonces se baja la bandera.
 			editor.band_guardado = false;
 		}
 
         private void Boton_genera_posfija_Click(object sender, EventArgs e)
         {
 			Expresion exp = new Expresion(); // Inicializa la expresion.
-			exp.expresion = Text_Box.Text; 
-			
+			exp.expresion = Text_Box.Text;
 
+			// Limpia el grid
+			limpia_grid();
 			Text_Box_posfija.Clear(); // Resetea el textbox
 
 			exp.expresion = exp.convierte_a_explicita(exp.expresion);
 			Text_Box_posfija.Text = exp.convierte_a_posfija();
 			
 		}
+
+        private void Boton_AFN_Click(object sender, EventArgs e)
+        {
+			string[] row;
+			int cont;
+			int cont2;
+			if(Text_Box_posfija.Text != "") // Si ya se generó la posfija
+            {
+				// Limpia el grid antes de usarlo
+				limpia_grid();
+
+				// Generar AFN
+				automata_afn = new AFN();
+				automata_afn.genera_automata_AFN(Text_Box_posfija.Text);
+				automata_afn.genera_alfabeto(Text_Box_posfija.Text);
+				automata_afn.genera_matriz();
+
+				// Hay que rellenar el grid
+				// Primero se setean las columnas y las filas
+				foreach (char c in automata_afn.alfabeto)
+					Tabla_transiciones_AFN.Columns.Add(c.ToString(), c.ToString());
+
+				cont = 0;
+				foreach (Estado es in automata_afn.estados)
+                {
+					cont2 = 0;
+					row = new string[automata_afn.alfabeto.Length+1];
+					row[cont2] = es.id.ToString();
+					cont2++;
+					for(int j = 0; j < automata_afn.alfabeto.Length; j++)
+                    {
+						row[cont2] = automata_afn.matriz[cont, j];
+						cont2++;
+                    }
+					cont++;
+					Tabla_transiciones_AFN.Rows.Add(row);
+				}
+			}
+        }
+
+		public void limpia_grid()
+        {
+			Tabla_transiciones_AFN.Columns.Clear();
+			Tabla_transiciones_AFN.Rows.Clear();
+
+			Tabla_transiciones_AFN.Columns.Add("", "");
+        }
     }
 }
