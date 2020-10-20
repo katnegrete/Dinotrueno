@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AFD.cs" />
     <Compile Include="AFN.cs" />
     <Compile Include="EditorTexto.cs" />
     <Compile Include="Estado.cs" />
