@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AFD.cs" />
     <Compile Include="AFN.cs" />
+    <Compile Include="Destado.cs" />
     <Compile Include="EditorTexto.cs" />
     <Compile Include="Estado.cs" />
     <Compile Include="Expresion.cs" />

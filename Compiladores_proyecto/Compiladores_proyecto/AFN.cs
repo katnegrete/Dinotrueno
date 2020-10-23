@@ -451,12 +451,24 @@ namespace Compiladores_proyecto
 
 		public void genera_alfabeto(string posfija)
 		{
-			string a = "ε"; // Es el alfabeto chiquito (solo las letras que se van a usar)
+			string a = ""; // Es el alfabeto chiquito (solo las letras que se van a usar)
+			bool band_repetido;
 
 			// Recorre la posfija y extrae todos los operandos y ese es el alfabeto.
 			foreach (char c in posfija)
 				if (c != '?' && c != '+' && c != '*' && c != '|' && c != '&') // Si es diferente de los operadores, entonces es operando.
-					a += c; // Añade operando al alfabeto
+				{
+					// Se tiene que checar que c no se repita ya en a
+					band_repetido = false;
+					foreach (char ca in a)
+					{
+						if (ca == c)
+							band_repetido = true;
+					}
+					// Si no se repite, se añade
+					if (!band_repetido)
+						a += c; // Añade operando al alfabeto
+				}
 
 			alfabeto = a;
 		}
@@ -505,20 +517,6 @@ namespace Compiladores_proyecto
 					
                 }
             }
-
-			/*
-			//////////////
-			string asd="";
-			for (int i = 0; i < estados.Count; i++)
-			{
-				for (int j = 0; j < alfabeto.Length; j++)
-				{
-					asd += matriz[i, j];
-				}
-				asd += "\n";
-			}
-			MessageBox.Show(asd);
-			*/
 
 		}
 	}

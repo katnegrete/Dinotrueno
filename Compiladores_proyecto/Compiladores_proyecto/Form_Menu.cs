@@ -16,7 +16,8 @@ namespace Compiladores_proyecto
 	{
 		// Variables globales
 		EditorTexto editor;
-		AFN automata_afn;
+		AFN automata_afn = new AFN();
+		AFD automata_afd = new AFD();
 
 		public Form_Menu()
 		{
@@ -171,7 +172,8 @@ namespace Compiladores_proyecto
 			Text_Box_posfija.Enabled = false;
 
 			// Limpia el grid
-			limpia_grid();
+			limpia_grid_AFN();
+			limpia_grid_AFD();
 		}
 
 		public void activa_controles()
@@ -204,7 +206,8 @@ namespace Compiladores_proyecto
 			exp.expresion = Text_Box.Text;
 
 			// Limpia el grid
-			limpia_grid();
+			limpia_grid_AFN();
+			limpia_grid_AFD();
 			Text_Box_posfija.Clear(); // Resetea el textbox
 
 			exp.expresion = exp.convierte_a_explicita(exp.expresion);
@@ -220,7 +223,7 @@ namespace Compiladores_proyecto
 			if(Text_Box_posfija.Text != "") // Si ya se generó la posfija
             {
 				// Limpia el grid antes de usarlo
-				limpia_grid();
+				limpia_grid_AFN();
 
 				// Generar AFN
 				automata_afn = new AFN();
@@ -251,12 +254,62 @@ namespace Compiladores_proyecto
 			}
         }
 
-		public void limpia_grid()
+		private void Boton_AFD_Click(object sender, EventArgs e)
+		{
+			string[] row;
+			int cont;
+			int cont2;
+			List<int> cero = new List<int>();
+
+			if (Text_Box_posfija.Text != "" && automata_afn.estados.Count > 0) // Si ya se generó la posfija y el AFN
+            {
+				// Limpia el grid antes de usarlo
+				limpia_grid_AFD();
+
+				automata_afd = new AFD();
+				automata_afd.automata_afn = automata_afn;
+				automata_afd.genera_alfabeto(Text_Box_posfija.Text);
+				cero.Add(0);
+				automata_afd.genera_automata_afd(automata_afd.cerradura_epsilon(cero));
+				automata_afd.genera_matriz();
+
+				// Hay que rellenar el grid
+				// Primero se setean las columnas y las filas
+				foreach (char c in automata_afd.alfabeto)
+					Tabla_transiciones_AFD.Columns.Add(c.ToString(), c.ToString());
+
+				cont = 0;
+				foreach (Destado es in automata_afd.Destados)
+				{
+					cont2 = 0;
+					row = new string[automata_afd.alfabeto.Length + 1];
+					row[cont2] = es.id.ToString();
+					cont2++;
+					for (int j = 0; j < automata_afd.alfabeto.Length; j++)
+					{
+						row[cont2] = automata_afd.matriz[cont, j];
+						cont2++;
+					}
+					cont++;
+					Tabla_transiciones_AFD.Rows.Add(row);
+				}
+			}
+		}
+
+		public void limpia_grid_AFN()
         {
 			Tabla_transiciones_AFN.Columns.Clear();
 			Tabla_transiciones_AFN.Rows.Clear();
 
 			Tabla_transiciones_AFN.Columns.Add("", "");
-        }
-    }
+		}
+
+		public void limpia_grid_AFD()
+		{
+			Tabla_transiciones_AFD.Columns.Clear();
+			Tabla_transiciones_AFD.Rows.Clear();
+
+			Tabla_transiciones_AFD.Columns.Add("", "");
+		}
+	}
 }
