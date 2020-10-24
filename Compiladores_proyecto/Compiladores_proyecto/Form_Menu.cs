@@ -200,10 +200,12 @@ namespace Compiladores_proyecto
 			editor.band_guardado = false;
 		}
 
-        private void Boton_genera_posfija_Click(object sender, EventArgs e)
+		private void Boton_genera_posfija_Click(object sender, EventArgs e)
         {
 			Expresion exp = new Expresion(); // Inicializa la expresion.
+			
 			exp.expresion = Text_Box.Text;
+			exp.expresion = exp.expresion.Replace(" ", "");
 
 			// Limpia el grid
 			limpia_grid_AFN();
