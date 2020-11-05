@@ -170,6 +170,8 @@ namespace Compiladores_proyecto
 			Boton_genera_posfija.Enabled = false;
 			Text_Box_posfija.Text = "";
 			Text_Box_posfija.Enabled = false;
+			Text_Box_Lexema.Text = "";
+			Text_Box_Lexema.Enabled = false;
 
 			// Limpia el grid
 			limpia_grid_AFN();
@@ -189,6 +191,7 @@ namespace Compiladores_proyecto
 			Boton_AFN.Enabled = true;
 			Boton_genera_posfija.Enabled = true;
 			Text_Box_posfija.Enabled = true;
+			Text_Box_Lexema.Enabled = true;
 		}
 		
 
@@ -298,6 +301,19 @@ namespace Compiladores_proyecto
 			}
 		}
 
+		private void Boton_verifica_lexema_Click(object sender, EventArgs e)
+		{
+			if(automata_afd.Destados.Count > 0) // Si tiene al menos un destado, significa que ya se generó
+            {
+				if(automata_afd.verifica_lexema(automata_afd.Destados[0], Text_Box_Lexema.Text, 0))
+					MessageBox.Show("El lexema SI es parte de la gramatica.");
+                else
+					MessageBox.Show("El lexema NO es parte de la gramatica.");
+            }
+            else
+				MessageBox.Show("Primero se tiene que genrar el AFD de la gramatica.");
+		}
+
 		public void limpia_grid_AFN()
         {
 			Tabla_transiciones_AFN.Columns.Clear();
@@ -313,5 +329,5 @@ namespace Compiladores_proyecto
 
 			Tabla_transiciones_AFD.Columns.Add("", "");
 		}
-	}
+    }
 }

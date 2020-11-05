@@ -11,5 +11,6 @@ namespace Compiladores_proyecto
         public string id = "";
         public List<int> conjunto = new List<int>();
         public bool marcado = false;
+        public string tipo = "normal";
     }
 }

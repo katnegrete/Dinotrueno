@@ -77,6 +77,17 @@ namespace Compiladores_proyecto
 
 				cont_destado++; // Mueve el indice
             }
+
+			// Checa destados de aceptacion
+			verifica_destados_aceptacion();
+        }
+
+		public void verifica_destados_aceptacion()
+        {
+			foreach(Destado d in Destados) // Recorre los destados
+				foreach(int i in d.conjunto) // Recorre el conjunto del destado
+					if(i == automata_afn.estados[automata_afn.estados.Count - 1].id) // Si el estado de aceptacion del afn se encuentra en el conjunto entonces es de aceptacion
+						d.tipo = "aceptacion";
         }
 
 		public bool compara_conjuntos(List<int> c1, List<int> c2)
@@ -218,5 +229,36 @@ namespace Compiladores_proyecto
                 }
             }
 		}
+
+		public bool verifica_lexema(Destado usando, string lexema, int cont)
+        {
+			bool band = false; // Bandera para saber si encontró camino
+
+			if(lexema == "") // Si se puso epsilon
+				if (usando.tipo == "aceptacion") // Si el destado en el que terminó es de aceptacion
+					return true;
+
+			if (cont >= lexema.Length) // Si ya terminó de recorrer el lexema
+				if(usando.tipo == "aceptacion") // Si el destado en el que terminó es de aceptacion
+					return true;
+
+			// Se recorren todas las transiciones para bsucar los caminos
+			foreach(Transicion t in transiciones)
+            {
+				if(t.destado_origen == usando) // Si encuentra una transicion que empiece con el destado usando
+                {
+					if(t.simbolo == lexema[cont]) // Si la transicion va con el simblo en el que se está iterando el lexema
+                    {
+						band = true;
+						cont++;
+						return verifica_lexema(t.destado_destino, lexema, cont);
+                    }
+                }
+            }
+            if (!band) // Si no encontró por donde irse, el lexema no poertenece a la gramatica.
+				return false;
+
+			return false;
+        }
 	}
 }
