@@ -57,7 +57,7 @@ namespace Compiladores_proyecto
 							}
 						}
 						
-						if (!band_repetido) // Si no se repite, crea un destadp nuevo
+						if (!band_repetido) // Si no se repite, crea un destado nuevo
 						{
 							destado.conjunto = destado_aux;
 							destado.id = id_destado.ToString();
@@ -183,7 +183,7 @@ namespace Compiladores_proyecto
 
 			// Recorre la posfija y extrae todos los operandos y ese es el alfabeto.
 			foreach (char c in posfija)
-				if (c != '?' && c != '+' && c != '*' && c != '|' && c != '&') // Si es diferente de los operadores, entonces es operando.
+				if (c != '?' && c != '+' && c != '*' && c != '|' && c != '&' ) // Si es diferente de los operadores, entonces es operando.
                 {
 					// Se tiene que checar que c no se repita ya en a
 					band_repetido = false;
