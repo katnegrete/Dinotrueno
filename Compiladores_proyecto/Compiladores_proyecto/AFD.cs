@@ -234,13 +234,14 @@ namespace Compiladores_proyecto
         {
 			bool band = false; // Bandera para saber si encontró camino
 
-			if(lexema == "") // Si se puso epsilon
-				if (usando.tipo == "aceptacion") // Si el destado en el que terminó es de aceptacion
-					return true;
+			if(lexema == "" && usando.tipo == "aceptacion") // Si se puso epsilon y Si el destado en el que terminó es de aceptacion
+				return true;
 
-			if (cont >= lexema.Length) // Si ya terminó de recorrer el lexema
-				if(usando.tipo == "aceptacion") // Si el destado en el que terminó es de aceptacion
-					return true;
+			if (cont >= lexema.Length && usando.tipo == "aceptacion") // Si ya terminó de recorrer el lexema y Si el destado en el que terminó es de aceptacion
+				return true;
+
+			if (cont >= lexema.Length && usando.tipo == "normal") // Si ya terminó de recorrer el lexema y no quedó en un destado de aceptacion
+				return false;
 
 			// Se recorren todas las transiciones para bsucar los caminos
 			foreach(Transicion t in transiciones)
