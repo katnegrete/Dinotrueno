@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
 
 namespace Compiladores_proyecto
 {
@@ -172,10 +173,14 @@ namespace Compiladores_proyecto
 			Text_Box_posfija.Enabled = false;
 			Text_Box_Lexema.Text = "";
 			Text_Box_Lexema.Enabled = false;
+			TextBox_id.Enabled = false;
+			TextBox_Num.Enabled = false;
+			Boton_Tokens.Enabled = false;
 
 			// Limpia el grid
 			limpia_grid_AFN();
 			limpia_grid_AFD();
+			limpia_grid_TOKENS();
 		}
 
 		public void activa_controles()
@@ -192,6 +197,9 @@ namespace Compiladores_proyecto
 			Boton_genera_posfija.Enabled = true;
 			Text_Box_posfija.Enabled = true;
 			Text_Box_Lexema.Enabled = true;
+			TextBox_id.Enabled = true;
+			TextBox_Num.Enabled = true;
+			Boton_Tokens.Enabled = true;
 		}
 		
 
@@ -314,6 +322,46 @@ namespace Compiladores_proyecto
 				MessageBox.Show("Primero se tiene que genrar el AFD de la gramatica.");
 		}
 
+		private void Boton_Tokens_Click(object sender, EventArgs e)
+		{
+			Lenguaje_Tiny tny = new Lenguaje_Tiny();
+			string[] row = new string[2];
+
+			if (TextBox_id.Text != "" && TextBox_Num.Text != "") // Solo si id y num tienen gramatica
+            {
+				if(Text_Box.Text != "") // Solo si si hay código
+                {
+					// Si ya habia algo escrito, lo sobrescribe
+					limpia_grid_TOKENS();
+
+					tny.setea_palabras_reservadas();
+					tny.genera_afds(TextBox_id.Text, TextBox_Num.Text);
+
+					// Le quita todos los espacios sobrantes dejando solo 1 espacio
+
+					tny.genera_tokens(Text_Box.Text);
+					tny.verifica_tokens();
+
+					// Se tiene que rellenar el grid
+					foreach (Token t in tny.tokens)
+					{
+						row[0] = t.nombre;
+						row[1] = t.lexema;
+						Tabla_Tokens.Rows.Add(row);
+						row = new string[2];
+					}
+                }
+                else
+                {
+					MessageBox.Show("No existe ningún código abierto.");
+				}
+            }
+            else
+            {
+				MessageBox.Show("Identificar y Número tienen que contener una gramatica");
+			}
+		}
+
 		public void limpia_grid_AFN()
         {
 			Tabla_transiciones_AFN.Columns.Clear();
@@ -328,6 +376,15 @@ namespace Compiladores_proyecto
 			Tabla_transiciones_AFD.Rows.Clear();
 
 			Tabla_transiciones_AFD.Columns.Add("", "");
+		}
+
+		public void limpia_grid_TOKENS()
+        {
+			Tabla_Tokens.Columns.Clear();
+			Tabla_Tokens.Rows.Clear();
+
+			Tabla_Tokens.Columns.Add("Nombre", "Nombre");
+			Tabla_Tokens.Columns.Add("Lexema", "Lexema");
 		}
     }
 }
