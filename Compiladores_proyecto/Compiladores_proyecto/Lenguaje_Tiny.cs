@@ -133,9 +133,7 @@ namespace Compiladores_proyecto
 			// Le quita todos los espacios repetidos y deja 1 solo espacio
 			codigo_tiny = codigo_tiny.Replace("\n", " ");
 			while (codigo_tiny.Contains("  "))
-			{
 				codigo_tiny = codigo_tiny.Replace("  ", " ");
-			}
 
 			Token tkn = new Token();
 			string palabra = ""; // String usado para separar las palabras
@@ -153,6 +151,13 @@ namespace Compiladores_proyecto
 					palabra = "";
                 }
             }
-        }
+			// Se agrega el ultimo token que queda sobrando
+			if(palabra != "")
+            {
+				tkn = new Token();
+				tkn.lexema = palabra;
+				tokens.Add(tkn);
+			}
+		}
 	}
 }
