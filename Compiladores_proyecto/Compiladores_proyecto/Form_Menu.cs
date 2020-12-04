@@ -176,11 +176,14 @@ namespace Compiladores_proyecto
 			TextBox_id.Enabled = false;
 			TextBox_Num.Enabled = false;
 			Boton_Tokens.Enabled = false;
+			label_estadosC.Text = "Estados en C:";
+			Text_EstadosC.Text = "";
 
 			// Limpia el grid
 			limpia_grid_AFN();
 			limpia_grid_AFD();
 			limpia_grid_TOKENS();
+			limpia_grid_LR0();
 		}
 
 		public void activa_controles()
@@ -362,6 +365,249 @@ namespace Compiladores_proyecto
 			}
 		}
 
+		private void Boton_AFD_LR_Click(object sender, EventArgs e)
+		{
+			List<List<Simbolo_Gramatical>> res_ir_a = new List<List<Simbolo_Gramatical>>();
+			List<List<Simbolo_Gramatical>> lista_aux_aumentada = new List<List<Simbolo_Gramatical>>();
+			bool band_agregado = false; // Bandera para saber si se agregó algo a C en alguna iteracion
+			bool band_repetido = false; // Bandera para saber si el resultado de IR_A ya existe en C
+			int id_destado = 0;
+			Destado I_aux = new Destado();
+			Destado I_origen = new Destado();
+			List<Transicion> transiciones = new List<Transicion>(); // Lista de transiciones para el afd
+			LR0 lr0 = new LR0();
+			lr0.set_gramatica(); // Setea toda la gramatica del lenguaje tiny
+
+			// Crea el primer estado, le aplica cerradura y lo añade al conjunto C
+			I_aux.id = "I" + id_destado.ToString();
+			id_destado++;
+			lista_aux_aumentada.Add(lr0.G.producciones[0]); // Unicamente es para poder llamar a la funcion de cerradura
+			I_aux.conjunto_lr0 = lr0.cerradura(lista_aux_aumentada);
+			lr0.c.Add(I_aux);
+			
+			band_agregado = false;
+
+			for(int i = 0; i < lr0.c.Count; i++)
+            {
+				foreach(Simbolo_Gramatical x in lr0.G.noterminales)
+                {
+					band_repetido = false;
+					res_ir_a = lr0.ir_a(lr0.c[i], x);
+
+					if (res_ir_a != null) // Si no está vacío
+                    {
+						// Busca si ya existe en C
+						foreach(Destado estado in lr0.c)
+							if (compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
+								band_repetido = true;
+
+						if (!band_repetido) // Si no se repite, entonces lo agrega
+						{
+							I_aux = new Destado();
+							I_aux.id = "I" + id_destado.ToString();
+							id_destado++;
+							I_aux.conjunto_lr0 = res_ir_a;
+							lr0.c.Add(I_aux);
+							band_agregado = true;
+
+							// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
+							I_origen = new Destado();
+							foreach(Destado dst in lr0.c)
+								if(compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
+									I_origen = dst;
+
+							Transicion tr = new Transicion();
+							tr.simbolo_lr0 = x.simbolo;
+							tr.destado_origen = I_origen;
+							tr.destado_destino = I_aux;
+							transiciones.Add(tr);
+						}
+                    }
+                }
+				foreach(Simbolo_Gramatical x in lr0.G.terminales)
+				{
+					band_repetido = false;
+					res_ir_a = lr0.ir_a(lr0.c[i], x);
+
+					if (res_ir_a != null) // Si no está vacío
+					{
+						// Busca si ya existe en C
+						foreach (Destado estado in lr0.c)
+							if (compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
+								band_repetido = true;
+
+						if (!band_repetido) // Si no se repite, entonces lo agrega
+						{
+							I_aux = new Destado();
+							I_aux.id = "I" + id_destado.ToString();
+							id_destado++;
+							I_aux.conjunto_lr0 = res_ir_a;
+							lr0.c.Add(I_aux);
+							band_agregado = true;
+
+							// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
+							I_origen = new Destado();
+							foreach (Destado dst in lr0.c)
+								if (compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
+									I_origen = dst;
+
+							Transicion tr = new Transicion();
+							tr.simbolo_lr0 = x.simbolo;
+							tr.destado_origen = I_origen;
+							tr.destado_destino = I_aux;
+							transiciones.Add(tr);
+						}
+					}
+				}
+			}
+
+			// Imprimir c final
+			label_estadosC.Text += "  (" + lr0.c.Count.ToString() + ")";
+			string sc_prod = "";
+			string sc_estado = "";
+			string sc_todo = "";
+			foreach (Destado estado in lr0.c)
+			{
+				sc_estado = estado.id += "\n";
+				foreach (List<Simbolo_Gramatical> prod in estado.conjunto_lr0)
+                {
+					sc_prod = prod[0].simbolo + " -> ";
+					for(int i = 1; i < prod.Count; i++)
+						sc_prod += prod[i].simbolo + " ";
+					sc_estado += sc_prod + "\n";
+				}
+				sc_todo += sc_estado += "\n\n";
+			}
+			Text_EstadosC.Text = sc_todo;
+
+			// Llenar el grid de las transiciones de los Destados
+			// Primero se setean las columnas y las filas
+			int cont = 0, cont2 = 0;
+			string[] row;
+			string[,] matriz;
+			List<string> alfabeto = new List<string>();
+			foreach (Simbolo_Gramatical x in lr0.G.noterminales)
+            {
+				tabla_transiciones_LR.Columns.Add(x.simbolo, x.simbolo);
+				alfabeto.Add(x.simbolo);
+			}
+				
+			foreach (Simbolo_Gramatical x in lr0.G.terminales)
+            {
+				tabla_transiciones_LR.Columns.Add(x.simbolo, x.simbolo);
+				alfabeto.Add(x.simbolo);
+			}
+
+
+			matriz = genera_matriz_lr0(lr0.c, alfabeto, transiciones);
+
+			cont = 0;
+			foreach (Destado es in lr0.c)
+			{
+				cont2 = 0;
+				row = new string[alfabeto.Count + 1];
+				row[cont2] = es.id.ToString();
+				cont2++;
+				for (int j = 0; j < alfabeto.Count; j++)
+				{
+					row[cont2] = matriz[cont, j];
+					cont2++;
+				}
+				cont++;
+				tabla_transiciones_LR.Rows.Add(row);
+			}
+		}
+
+		public string[,] genera_matriz_lr0(List<Destado> c, List<string> alfabeto, List<Transicion> transiciones)
+		{
+			string[,] matriz;
+			matriz = new string[c.Count, alfabeto.Count];
+			string vacio = "";
+
+			for (int i = 0; i < c.Count; i++)
+			{
+				for (int j = 0; j < alfabeto.Count; j++)
+				{
+					matriz[i, j] = vacio;
+					foreach (Transicion t in transiciones)
+					{
+						if (t.destado_origen.id == c[i].id && t.simbolo_lr0 == alfabeto[j])
+							matriz[i, j] = t.destado_destino.id;
+					}
+				}
+			}
+			return matriz;
+		}
+
+		bool compara_ListaProducciones(List<List<Simbolo_Gramatical>> a, List<List<Simbolo_Gramatical>> b)
+        {
+			bool iguales = true;
+			List<string> a_s = new List<string>();
+			string b_s = "";
+			int contador = 0; // Contador con el que se va a checar que los elementos de a sean iguales a los de b
+
+			// Si nisiquiera tienen el mismo tamaño, pues desde ahi no son ifuales
+			if (a.Count != b.Count)
+				iguales = false;
+
+			// Si al menos el tamaño es el mismo, entonecs PUEDEN ser iguales
+            if (iguales)
+            {
+				// Para evitar checar lista de listas, porque es demasiado por el ausnto de que pueden estár en desorden, 
+				// se "castean" las listas de listas de simbolos gramaticales, a lista de strings para hacer directo el chequeo
+				// a se hace una lista de strings y b se hace una string completa
+				a_s = transoforma_a_strings(a);
+				b_s = transoforma_a_string(b);
+
+				// Se checa string por string de a, que exista en b, si si existe, se incremente el contador y
+				// si al final el contador es igual al count de a, significa que todas y cada una de las strings
+				// de a se encontraron en b, lo que significa que a y b son iguales.
+				foreach(string s in a_s)
+					if (b_s.Contains(s))
+						contador++;
+
+				// Significa que no se encontraron todas las producciones de a en b, por lo tanto, no son iguales
+				if (contador != a_s.Count)
+					iguales = false;
+			}
+
+			return iguales;
+        }
+
+		public List<string> transoforma_a_strings(List<List<Simbolo_Gramatical>> a)
+        {
+			List<string> l = new List<string>();
+			string produccion = "";
+
+			// Recorre una produccion de la lista de producciones
+			foreach(List<Simbolo_Gramatical> prod in a)
+            {
+				produccion = "";
+				// Recorre todos los elementos de esa produccion y los concatena
+				foreach(Simbolo_Gramatical sim in prod)
+					produccion += sim.simbolo;
+
+				l.Add(produccion);
+            }
+
+			return l;
+		}
+
+		public string transoforma_a_string(List<List<Simbolo_Gramatical>> a)
+		{
+			string produccion = "";
+
+			// Recorre una produccion de la lista de producciones
+			foreach (List<Simbolo_Gramatical> prod in a)
+			{
+				// Recorre todos los elementos de esa produccion y los concatena
+				foreach (Simbolo_Gramatical sim in prod)
+					produccion += sim.simbolo;
+			}
+
+			return produccion;
+		}
+
 		public void limpia_grid_AFN()
         {
 			Tabla_transiciones_AFN.Columns.Clear();
@@ -386,5 +632,13 @@ namespace Compiladores_proyecto
 			Tabla_Tokens.Columns.Add("Nombre", "Nombre");
 			Tabla_Tokens.Columns.Add("Lexema", "Lexema");
 		}
-    }
+
+		public void limpia_grid_LR0()
+		{
+			tabla_transiciones_LR.Columns.Clear();
+			tabla_transiciones_LR.Rows.Clear();
+
+			tabla_transiciones_LR.Columns.Add("", "");
+		}
+	}
 }
