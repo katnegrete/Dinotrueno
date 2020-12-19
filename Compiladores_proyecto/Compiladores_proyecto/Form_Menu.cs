@@ -184,6 +184,7 @@ namespace Compiladores_proyecto
 			limpia_grid_AFD();
 			limpia_grid_TOKENS();
 			limpia_grid_LR0();
+			limpia_grid_TablaAnalisis_LR0();
 		}
 
 		public void activa_controles()
@@ -369,7 +370,6 @@ namespace Compiladores_proyecto
 		{
 			List<List<Simbolo_Gramatical>> res_ir_a = new List<List<Simbolo_Gramatical>>();
 			List<List<Simbolo_Gramatical>> lista_aux_aumentada = new List<List<Simbolo_Gramatical>>();
-			bool band_agregado = false; // Bandera para saber si se agregó algo a C en alguna iteracion
 			bool band_repetido = false; // Bandera para saber si el resultado de IR_A ya existe en C
 			int id_destado = 0;
 			Destado I_aux = new Destado();
@@ -385,11 +385,11 @@ namespace Compiladores_proyecto
 			I_aux.conjunto_lr0 = lr0.cerradura(lista_aux_aumentada);
 			lr0.c.Add(I_aux);
 			
-			band_agregado = false;
 
+			// Recorre la lista de estados (c)
 			for(int i = 0; i < lr0.c.Count; i++)
             {
-				foreach(Simbolo_Gramatical x in lr0.G.noterminales)
+				foreach(Simbolo_Gramatical x in lr0.G.terminales)
                 {
 					band_repetido = false;
 					res_ir_a = lr0.ir_a(lr0.c[i], x);
@@ -398,7 +398,7 @@ namespace Compiladores_proyecto
                     {
 						// Busca si ya existe en C
 						foreach(Destado estado in lr0.c)
-							if (compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
+							if (lr0.compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
 								band_repetido = true;
 
 						if (!band_repetido) // Si no se repite, entonces lo agrega
@@ -408,12 +408,11 @@ namespace Compiladores_proyecto
 							id_destado++;
 							I_aux.conjunto_lr0 = res_ir_a;
 							lr0.c.Add(I_aux);
-							band_agregado = true;
 
 							// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
 							I_origen = new Destado();
 							foreach(Destado dst in lr0.c)
-								if(compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
+								if(lr0.compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
 									I_origen = dst;
 
 							Transicion tr = new Transicion();
@@ -424,7 +423,7 @@ namespace Compiladores_proyecto
 						}
                     }
                 }
-				foreach(Simbolo_Gramatical x in lr0.G.terminales)
+				foreach(Simbolo_Gramatical x in lr0.G.noterminales)
 				{
 					band_repetido = false;
 					res_ir_a = lr0.ir_a(lr0.c[i], x);
@@ -433,7 +432,7 @@ namespace Compiladores_proyecto
 					{
 						// Busca si ya existe en C
 						foreach (Destado estado in lr0.c)
-							if (compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
+							if (lr0.compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
 								band_repetido = true;
 
 						if (!band_repetido) // Si no se repite, entonces lo agrega
@@ -443,12 +442,11 @@ namespace Compiladores_proyecto
 							id_destado++;
 							I_aux.conjunto_lr0 = res_ir_a;
 							lr0.c.Add(I_aux);
-							band_agregado = true;
 
 							// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
 							I_origen = new Destado();
 							foreach (Destado dst in lr0.c)
-								if (compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
+								if (lr0.compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
 									I_origen = dst;
 
 							Transicion tr = new Transicion();
@@ -480,6 +478,7 @@ namespace Compiladores_proyecto
 			}
 			Text_EstadosC.Text = sc_todo;
 
+
 			// Llenar el grid de las transiciones de los Destados
 			// Primero se setean las columnas y las filas
 			int cont = 0, cont2 = 0;
@@ -491,16 +490,12 @@ namespace Compiladores_proyecto
 				tabla_transiciones_LR.Columns.Add(x.simbolo, x.simbolo);
 				alfabeto.Add(x.simbolo);
 			}
-				
 			foreach (Simbolo_Gramatical x in lr0.G.terminales)
             {
 				tabla_transiciones_LR.Columns.Add(x.simbolo, x.simbolo);
 				alfabeto.Add(x.simbolo);
 			}
-
-
 			matriz = genera_matriz_lr0(lr0.c, alfabeto, transiciones);
-
 			cont = 0;
 			foreach (Destado es in lr0.c)
 			{
@@ -516,13 +511,137 @@ namespace Compiladores_proyecto
 				cont++;
 				tabla_transiciones_LR.Rows.Add(row);
 			}
+
+
+			// Genera la tabla de analisis
+			limpia_grid_TablaAnalisis_LR0();
+			genera_tabla_analisis_lr0(lr0, transiciones);
 		}
+
+		public void genera_tabla_analisis_lr0(LR0 lr, List<Transicion> transiciones)
+        {
+			// Se tienen que llenar por separado la tabla de ACCION y de ir_A
+			string[,] matriz_accion = new string[lr.c.Count, lr.G.terminales.Count+1]; // El +1 es por el $
+			string[,] matriz_ira = new string[lr.c.Count, lr.G.noterminales.Count];
+			List<List<string>> recibidos_regla2 = new List<List<string>>();
+			string aux = "";
+
+			foreach (Simbolo_Gramatical sim in lr.G.terminales) // Setea las columnas para ACCION
+				Tabla_Analisis_LR0_ACCION.Columns.Add(sim.simbolo, sim.simbolo);
+			Tabla_Analisis_LR0_ACCION.Columns.Add("$", "$");
+			foreach (Simbolo_Gramatical sim in lr.G.noterminales) // Setea las columnas para ir_A
+				Tabla_Analisis_LR0_IRA.Columns.Add(sim.simbolo, sim.simbolo);
+
+			// Llena matriz ACCION
+			for(int i = 0; i < lr.c.Count; i++) // Recorre estado por estado
+            {
+				foreach (List<Simbolo_Gramatical> elemento in lr.c[i].conjunto_lr0) // Tiene que recorrer cada elemento {[],[],...}
+				{
+					// Checa la relga 1
+					for (int j = 0; j < lr.G.terminales.Count; j++) // Tiene que recorrer cada terminal
+					{ 
+						if(matriz_accion[i, j] == null || matriz_accion[i, j] == "")
+                        {
+							aux = lr.analisis_accion_relga1(elemento, lr.c[i], lr.G.terminales[j], transiciones);
+							if (aux != "")
+								matriz_accion[i, j] = aux;
+							//MessageBox.Show(matriz_accion[i, j]);
+						}
+					}
+
+					// Checa la regla 2
+					recibidos_regla2 = lr.analisis_accion_relga2(elemento); // Recibe todos los r
+					if (recibidos_regla2.Count > 0) // Si si le llegó algo
+					{ 
+						for(int k = 0; k < recibidos_regla2.Count; k++)
+                        {
+							int inde = obten_indice_terminal(recibidos_regla2[k][0], lr.G.terminales);
+							string simbol = recibidos_regla2[k][0];
+							string simbol2 = recibidos_regla2[k][1];
+							matriz_accion[i, obten_indice_terminal(recibidos_regla2[k][0], lr.G.terminales)] = recibidos_regla2[k][1];
+						}
+					}
+
+
+					// Checa la regla 3
+					if(matriz_accion[i, lr.G.terminales.Count] == null || matriz_accion[i, lr.G.terminales.Count] == "")
+                    {
+						aux = lr.analisis_accion_relga3(elemento);
+						if (aux != "")
+							matriz_accion[i, lr.G.terminales.Count] = aux;
+					}
+						
+					// se usa directamente "lr.G.terminales.Count" porque ese es el indice en el que se encuentra $ al momento de crear la matriz
+				}
+			}
+			////Imprime matriz asi alv
+			//string ultra = "";
+			//string meh = "";
+			//for(int i = 0; i < lr.c.Count; i++)
+   //         {
+			//	meh = "";
+			//	for(int j = 0; j < lr.G.terminales.Count + 1; j++)
+   //             {
+			//		MessageBox.Show(matriz_accion[i, j]);
+   //             }
+			//	ultra += meh + "\n";
+   //         }
+			
+
+
+			// Llena datagrid con la amtriz ACCION
+			int cont = 0, cont2 = 0;
+			string[] row;
+			List<string> alfabeto = new List<string>();
+			foreach (Simbolo_Gramatical x in lr.G.terminales)
+				alfabeto.Add(x.simbolo);
+			alfabeto.Add("$");
+			cont = 0;
+			foreach (Destado es in lr.c)
+			{
+				cont2 = 0;
+				row = new string[alfabeto.Count + 1];
+				row[cont2] = es.id.ToString();
+				cont2++;
+				for (int j = 0; j < alfabeto.Count; j++)
+				{
+					row[cont2] = matriz_accion[cont, j];
+					cont2++;
+				}
+				cont++;
+				Tabla_Analisis_LR0_ACCION.Rows.Add(row);
+			}
+
+
+			// Llena ir_A
+
+		}
+
+		public int obten_indice_terminal(string terminal, List<Simbolo_Gramatical> terminales)
+        {
+			int indice = -1;
+
+			if(terminal == "$")
+            {
+				// Si es $, no lo va a encontrar en los terminales
+				indice = terminales.Count;
+            }
+            else
+            {
+				// Recorre la lista de terminales para encontrar el indice de un terminal indicado
+				foreach (Simbolo_Gramatical sim in terminales)
+					if (sim.simbolo == terminal)
+						indice = terminales.IndexOf(sim);
+			}
+
+			return indice;
+        }
 
 		public string[,] genera_matriz_lr0(List<Destado> c, List<string> alfabeto, List<Transicion> transiciones)
 		{
 			string[,] matriz;
 			matriz = new string[c.Count, alfabeto.Count];
-			string vacio = "";
+			string vacio = "Ø";
 
 			for (int i = 0; i < c.Count; i++)
 			{
@@ -537,75 +656,6 @@ namespace Compiladores_proyecto
 				}
 			}
 			return matriz;
-		}
-
-		bool compara_ListaProducciones(List<List<Simbolo_Gramatical>> a, List<List<Simbolo_Gramatical>> b)
-        {
-			bool iguales = true;
-			List<string> a_s = new List<string>();
-			string b_s = "";
-			int contador = 0; // Contador con el que se va a checar que los elementos de a sean iguales a los de b
-
-			// Si nisiquiera tienen el mismo tamaño, pues desde ahi no son ifuales
-			if (a.Count != b.Count)
-				iguales = false;
-
-			// Si al menos el tamaño es el mismo, entonecs PUEDEN ser iguales
-            if (iguales)
-            {
-				// Para evitar checar lista de listas, porque es demasiado por el ausnto de que pueden estár en desorden, 
-				// se "castean" las listas de listas de simbolos gramaticales, a lista de strings para hacer directo el chequeo
-				// a se hace una lista de strings y b se hace una string completa
-				a_s = transoforma_a_strings(a);
-				b_s = transoforma_a_string(b);
-
-				// Se checa string por string de a, que exista en b, si si existe, se incremente el contador y
-				// si al final el contador es igual al count de a, significa que todas y cada una de las strings
-				// de a se encontraron en b, lo que significa que a y b son iguales.
-				foreach(string s in a_s)
-					if (b_s.Contains(s))
-						contador++;
-
-				// Significa que no se encontraron todas las producciones de a en b, por lo tanto, no son iguales
-				if (contador != a_s.Count)
-					iguales = false;
-			}
-
-			return iguales;
-        }
-
-		public List<string> transoforma_a_strings(List<List<Simbolo_Gramatical>> a)
-        {
-			List<string> l = new List<string>();
-			string produccion = "";
-
-			// Recorre una produccion de la lista de producciones
-			foreach(List<Simbolo_Gramatical> prod in a)
-            {
-				produccion = "";
-				// Recorre todos los elementos de esa produccion y los concatena
-				foreach(Simbolo_Gramatical sim in prod)
-					produccion += sim.simbolo;
-
-				l.Add(produccion);
-            }
-
-			return l;
-		}
-
-		public string transoforma_a_string(List<List<Simbolo_Gramatical>> a)
-		{
-			string produccion = "";
-
-			// Recorre una produccion de la lista de producciones
-			foreach (List<Simbolo_Gramatical> prod in a)
-			{
-				// Recorre todos los elementos de esa produccion y los concatena
-				foreach (Simbolo_Gramatical sim in prod)
-					produccion += sim.simbolo;
-			}
-
-			return produccion;
 		}
 
 		public void limpia_grid_AFN()
@@ -640,5 +690,16 @@ namespace Compiladores_proyecto
 
 			tabla_transiciones_LR.Columns.Add("", "");
 		}
-	}
+
+		public void limpia_grid_TablaAnalisis_LR0()
+        {
+			Tabla_Analisis_LR0_ACCION.Columns.Clear();
+			Tabla_Analisis_LR0_ACCION.Rows.Clear();
+			Tabla_Analisis_LR0_IRA.Columns.Clear();
+			Tabla_Analisis_LR0_IRA.Rows.Clear();
+
+			Tabla_Analisis_LR0_ACCION.Columns.Add("Edo", "Edo");
+			Tabla_Analisis_LR0_IRA.Columns.Add("Edo", "Edo");
+		}
+    }
 }

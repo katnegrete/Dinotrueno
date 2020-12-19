@@ -63,11 +63,19 @@
             this.Boton_AFD_LR = new System.Windows.Forms.Button();
             this.Text_EstadosC = new System.Windows.Forms.RichTextBox();
             this.label_estadosC = new System.Windows.Forms.Label();
+            this.Tabla_Analisis_LR0_ACCION = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tabla_Analisis_LR0_IRA = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Tabla_transiciones_AFN)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Tabla_transiciones_AFD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Tabla_Tokens)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabla_transiciones_LR)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Tabla_Analisis_LR0_ACCION)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Tabla_Analisis_LR0_IRA)).BeginInit();
             this.SuspendLayout();
             // 
             // Text_Box
@@ -202,7 +210,7 @@
             this.Column1});
             this.Tabla_transiciones_AFN.Location = new System.Drawing.Point(13, 294);
             this.Tabla_transiciones_AFN.Name = "Tabla_transiciones_AFN";
-            this.Tabla_transiciones_AFN.Size = new System.Drawing.Size(233, 205);
+            this.Tabla_transiciones_AFN.Size = new System.Drawing.Size(233, 309);
             this.Tabla_transiciones_AFN.TabIndex = 6;
             // 
             // Column1
@@ -218,7 +226,7 @@
             this.dataGridViewTextBoxColumn1});
             this.Tabla_transiciones_AFD.Location = new System.Drawing.Point(252, 294);
             this.Tabla_transiciones_AFD.Name = "Tabla_transiciones_AFD";
-            this.Tabla_transiciones_AFD.Size = new System.Drawing.Size(233, 205);
+            this.Tabla_transiciones_AFD.Size = new System.Drawing.Size(233, 309);
             this.Tabla_transiciones_AFD.TabIndex = 7;
             // 
             // dataGridViewTextBoxColumn1
@@ -325,7 +333,7 @@
             this.Column3});
             this.Tabla_Tokens.Location = new System.Drawing.Point(491, 108);
             this.Tabla_Tokens.Name = "Tabla_Tokens";
-            this.Tabla_Tokens.Size = new System.Drawing.Size(244, 391);
+            this.Tabla_Tokens.Size = new System.Drawing.Size(244, 495);
             this.Tabla_Tokens.TabIndex = 19;
             // 
             // Column2
@@ -346,7 +354,7 @@
             this.dataGridViewTextBoxColumn2});
             this.tabla_transiciones_LR.Location = new System.Drawing.Point(741, 80);
             this.tabla_transiciones_LR.Name = "tabla_transiciones_LR";
-            this.tabla_transiciones_LR.Size = new System.Drawing.Size(302, 419);
+            this.tabla_transiciones_LR.Size = new System.Drawing.Size(302, 268);
             this.tabla_transiciones_LR.TabIndex = 20;
             // 
             // dataGridViewTextBoxColumn2
@@ -371,7 +379,7 @@
             this.Text_EstadosC.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Text_EstadosC.Location = new System.Drawing.Point(1049, 80);
             this.Text_EstadosC.Name = "Text_EstadosC";
-            this.Text_EstadosC.Size = new System.Drawing.Size(202, 419);
+            this.Text_EstadosC.Size = new System.Drawing.Size(202, 268);
             this.Text_EstadosC.TabIndex = 22;
             this.Text_EstadosC.Text = "";
             // 
@@ -385,12 +393,68 @@
             this.label_estadosC.TabIndex = 23;
             this.label_estadosC.Text = "Estados en C:";
             // 
+            // Tabla_Analisis_LR0_ACCION
+            // 
+            this.Tabla_Analisis_LR0_ACCION.BackgroundColor = System.Drawing.Color.NavajoWhite;
+            this.Tabla_Analisis_LR0_ACCION.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.Tabla_Analisis_LR0_ACCION.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn3});
+            this.Tabla_Analisis_LR0_ACCION.Location = new System.Drawing.Point(741, 372);
+            this.Tabla_Analisis_LR0_ACCION.Name = "Tabla_Analisis_LR0_ACCION";
+            this.Tabla_Analisis_LR0_ACCION.Size = new System.Drawing.Size(302, 231);
+            this.Tabla_Analisis_LR0_ACCION.TabIndex = 24;
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.HeaderText = "";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            // 
+            // Tabla_Analisis_LR0_IRA
+            // 
+            this.Tabla_Analisis_LR0_IRA.BackgroundColor = System.Drawing.Color.NavajoWhite;
+            this.Tabla_Analisis_LR0_IRA.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.Tabla_Analisis_LR0_IRA.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn4});
+            this.Tabla_Analisis_LR0_IRA.Location = new System.Drawing.Point(1042, 372);
+            this.Tabla_Analisis_LR0_IRA.Name = "Tabla_Analisis_LR0_IRA";
+            this.Tabla_Analisis_LR0_IRA.Size = new System.Drawing.Size(209, 231);
+            this.Tabla_Analisis_LR0_IRA.TabIndex = 25;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.HeaderText = "";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(848, 351);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(74, 20);
+            this.label4.TabIndex = 26;
+            this.label4.Text = "ACCION";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("MS Reference Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(1128, 351);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(41, 20);
+            this.label5.TabIndex = 27;
+            this.label5.Text = "ir_A";
+            // 
             // Form_Menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(210)))), ((int)(((byte)(0)))));
-            this.ClientSize = new System.Drawing.Size(1263, 512);
+            this.ClientSize = new System.Drawing.Size(1263, 615);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.Tabla_Analisis_LR0_IRA);
+            this.Controls.Add(this.Tabla_Analisis_LR0_ACCION);
             this.Controls.Add(this.label_estadosC);
             this.Controls.Add(this.Text_EstadosC);
             this.Controls.Add(this.Boton_AFD_LR);
@@ -424,6 +488,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.Tabla_transiciones_AFD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Tabla_Tokens)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tabla_transiciones_LR)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Tabla_Analisis_LR0_ACCION)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.Tabla_Analisis_LR0_IRA)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -465,6 +531,12 @@
 		private System.Windows.Forms.Button Boton_AFD_LR;
         private System.Windows.Forms.RichTextBox Text_EstadosC;
         private System.Windows.Forms.Label label_estadosC;
+        private System.Windows.Forms.DataGridView Tabla_Analisis_LR0_ACCION;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridView Tabla_Analisis_LR0_IRA;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }
 

@@ -13,7 +13,7 @@ namespace Compiladores_proyecto
         public bool marcado = false;
         public string tipo = "normal"; // Normal o de Aceptacion
 
-        // para LR()
+        // Conjunto especificamente para uso del LR()
         public List<List<Simbolo_Gramatical>> conjunto_lr0 = new List<List<Simbolo_Gramatical>>();
     }
 }
