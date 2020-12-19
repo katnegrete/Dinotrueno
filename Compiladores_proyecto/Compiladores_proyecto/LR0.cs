@@ -23,21 +23,21 @@ namespace Compiladores_proyecto
             Simbolo_Gramatical simbolo_aux;
             List<Simbolo_Gramatical> produccion_amentada = new List<Simbolo_Gramatical>();
 
-            //// Se agrega manualmente la produccion aumentada (programa' -> .programa)
-            //simbolo_aux = new Simbolo_Gramatical("programa'", "NT");
-            //produccion_amentada.Add(simbolo_aux);
-            //simbolo_aux = new Simbolo_Gramatical(".", "PUNTO");
-            //produccion_amentada.Add(simbolo_aux);
-            //simbolo_aux = new Simbolo_Gramatical("programa", "NT");
-            //produccion_amentada.Add(simbolo_aux);
-
             // Se agrega manualmente la produccion aumentada (programa' -> .programa)
-            simbolo_aux = new Simbolo_Gramatical("S'", "NT");
+            simbolo_aux = new Simbolo_Gramatical("programa'", "NT");
             produccion_amentada.Add(simbolo_aux);
             simbolo_aux = new Simbolo_Gramatical(".", "PUNTO");
             produccion_amentada.Add(simbolo_aux);
-            simbolo_aux = new Simbolo_Gramatical("S", "NT");
+            simbolo_aux = new Simbolo_Gramatical("programa", "NT");
             produccion_amentada.Add(simbolo_aux);
+
+            //// Se agrega manualmente la produccion aumentada (programa' -> .programa)
+            //simbolo_aux = new Simbolo_Gramatical("S'", "NT");
+            //produccion_amentada.Add(simbolo_aux);
+            //simbolo_aux = new Simbolo_Gramatical(".", "PUNTO");
+            //produccion_amentada.Add(simbolo_aux);
+            //simbolo_aux = new Simbolo_Gramatical("S", "NT");
+            //produccion_amentada.Add(simbolo_aux);
 
 
             G.producciones.Add(produccion_amentada);
