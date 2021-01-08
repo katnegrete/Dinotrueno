@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Net;
 
 namespace Compiladores_proyecto
 {
@@ -109,14 +116,14 @@ namespace Compiladores_proyecto
 					// Checa si es id
 					if(afd_id.verifica_lexema(afd_id.Destados[0], tokens[i].lexema, 0))
                     {
-						tokens[i].nombre = "Identificador";
+						tokens[i].nombre = "identificador";
 						band_checado = true;
                     }
 					else // Checa si es num
 					{
 						if (afd_num.verifica_lexema(afd_num.Destados[0], tokens[i].lexema, 0))
 						{
-							tokens[i].nombre = "Número";
+							tokens[i].nombre = "numero";
 							band_checado = true;
 						}
 					}
@@ -130,33 +137,64 @@ namespace Compiladores_proyecto
 
 		public void genera_tokens(string codigo_tiny)
         {
+			List<string> lineas = new List<string>(); // El codigo separado por lineas para poder obtener el numero de linea de cada token
+			string linea_aux = ""; // String usado para separar lineas
+
 			// Le quita todos los espacios repetidos y deja 1 solo espacio
-			codigo_tiny = codigo_tiny.Replace("\n", " ");
+			codigo_tiny = codigo_tiny.Replace("\t","");
 			while (codigo_tiny.Contains("  "))
 				codigo_tiny = codigo_tiny.Replace("  ", " ");
+
+			// Separa el codigo por lineas para poder identificar de que linea es cada token
+			foreach (char c in codigo_tiny)
+            {
+				if(c != '\n')
+					linea_aux += c;
+                else
+                {
+					lineas.Add(linea_aux);
+					//MessageBox.Show(linea_aux);
+					linea_aux = "";
+                }
+            }
+			// Siempre al ultimo vaa haber una linea que no se guardó porque no temrinó en un enter innecesario
+			if(linea_aux != "")
+				lineas.Add(linea_aux);
 
 			Token tkn = new Token();
 			string palabra = ""; // String usado para separar las palabras
 
-			// Se recorre toda la linea de codigo y si es espacio, corta la palabra y la guarda
-			foreach(char c in codigo_tiny)
+			for(int i = 0; i < lineas.Count; i++) // Recorre cada linea
             {
-				if(c != ' ')
-					palabra += c.ToString();
-				else
-                {
+				palabra = "";
+				// Se recorre toda la linea de codigo y si es espacio, corta la palabra y la guarda
+				foreach (char c in lineas[i])
+				{
+					if (c != ' ')
+						palabra += c.ToString();
+					else
+					{
+						if(palabra != "")
+                        {
+							tkn = new Token();
+							tkn.lexema = palabra;
+							//MessageBox.Show(palabra);
+							tkn.linea = i + 1;
+							tokens.Add(tkn);
+							palabra = "";
+						}
+						
+					}
+				}
+				// Se agrega el ultimo token que queda sobrando
+				if (palabra != "")
+				{
 					tkn = new Token();
 					tkn.lexema = palabra;
+					//MessageBox.Show(palabra);
+					tkn.linea = i+1;
 					tokens.Add(tkn);
-					palabra = "";
-                }
-            }
-			// Se agrega el ultimo token que queda sobrando
-			if(palabra != "")
-            {
-				tkn = new Token();
-				tkn.lexema = palabra;
-				tokens.Add(tkn);
+				}
 			}
 		}
 	}

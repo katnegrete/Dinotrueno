@@ -10,5 +10,6 @@ namespace Compiladores_proyecto
     {
         public string nombre = "";
         public string lexema = "";
+        public int linea = -1;
     }
 }

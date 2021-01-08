@@ -19,6 +19,9 @@ namespace Compiladores_proyecto
 		EditorTexto editor;
 		AFN automata_afn = new AFN();
 		AFD automata_afd = new AFD();
+		string[,] ACCION;			// Matriz de accion del analisis completo
+		string[,] IRA;              // Matriz de ir_a del analisis completo
+		LR0 lr0;
 
 		public Form_Menu()
 		{
@@ -178,6 +181,8 @@ namespace Compiladores_proyecto
 			Boton_Tokens.Enabled = false;
 			label_estadosC.Text = "Estados en C:";
 			Text_EstadosC.Text = "";
+			Text_Box_Console_Analisis.Text = "";
+			
 
 			// Limpia el grid
 			limpia_grid_AFN();
@@ -341,8 +346,6 @@ namespace Compiladores_proyecto
 					tny.setea_palabras_reservadas();
 					tny.genera_afds(TextBox_id.Text, TextBox_Num.Text);
 
-					// Le quita todos los espacios sobrantes dejando solo 1 espacio
-
 					tny.genera_tokens(Text_Box.Text);
 					tny.verifica_tokens();
 
@@ -368,6 +371,11 @@ namespace Compiladores_proyecto
 
 		private void Boton_AFD_LR_Click(object sender, EventArgs e)
 		{
+			analisis_sintactico();
+		}
+
+		public void analisis_sintactico()
+        {
 			List<List<Simbolo_Gramatical>> res_ir_a = new List<List<Simbolo_Gramatical>>();
 			List<List<Simbolo_Gramatical>> lista_aux_aumentada = new List<List<Simbolo_Gramatical>>();
 			bool band_repetido = false; // Bandera para saber si el resultado de IR_A ya existe en C
@@ -375,7 +383,7 @@ namespace Compiladores_proyecto
 			Destado I_aux = new Destado();
 			Destado I_origen = new Destado();
 			List<Transicion> transiciones = new List<Transicion>(); // Lista de transiciones para el afd
-			LR0 lr0 = new LR0();
+			lr0 = new LR0();
 			lr0.set_gramatica(); // Setea toda la gramatica del lenguaje tiny
 
 			// Crea el primer estado, le aplica cerradura y lo añade al conjunto C
@@ -384,46 +392,12 @@ namespace Compiladores_proyecto
 			lista_aux_aumentada.Add(lr0.G.producciones[0]); // Unicamente es para poder llamar a la funcion de cerradura
 			I_aux.conjunto_lr0 = lr0.cerradura(lista_aux_aumentada);
 			lr0.c.Add(I_aux);
-			
+
 
 			// Recorre la lista de estados (c)
-			for(int i = 0; i < lr0.c.Count; i++)
-            {
-				foreach(Simbolo_Gramatical x in lr0.G.terminales)
-                {
-					band_repetido = false;
-					res_ir_a = lr0.ir_a(lr0.c[i], x);
-
-					if (res_ir_a != null) // Si no está vacío
-                    {
-						// Busca si ya existe en C
-						foreach(Destado estado in lr0.c)
-							if (lr0.compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
-								band_repetido = true;
-
-						if (!band_repetido) // Si no se repite, entonces lo agrega
-						{
-							I_aux = new Destado();
-							I_aux.id = "I" + id_destado.ToString();
-							id_destado++;
-							I_aux.conjunto_lr0 = res_ir_a;
-							lr0.c.Add(I_aux);
-
-							// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
-							I_origen = new Destado();
-							foreach(Destado dst in lr0.c)
-								if(lr0.compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
-									I_origen = dst;
-
-							Transicion tr = new Transicion();
-							tr.simbolo_lr0 = x.simbolo;
-							tr.destado_origen = I_origen;
-							tr.destado_destino = I_aux;
-							transiciones.Add(tr);
-						}
-                    }
-                }
-				foreach(Simbolo_Gramatical x in lr0.G.noterminales)
+			for (int i = 0; i < lr0.c.Count; i++)
+			{
+				foreach (Simbolo_Gramatical x in lr0.G.terminales)
 				{
 					band_repetido = false;
 					res_ir_a = lr0.ir_a(lr0.c[i], x);
@@ -432,8 +406,11 @@ namespace Compiladores_proyecto
 					{
 						// Busca si ya existe en C
 						foreach (Destado estado in lr0.c)
-							if (lr0.compara_ListaProducciones(res_ir_a, estado.conjunto_lr0)) // Si está repetido
+							if (lr0.compara_ListaProducciones(res_ir_a, estado.conjunto_lr0))
+							{ // Si está repetido
 								band_repetido = true;
+								I_aux = estado;
+							}
 
 						if (!band_repetido) // Si no se repite, entonces lo agrega
 						{
@@ -442,19 +419,58 @@ namespace Compiladores_proyecto
 							id_destado++;
 							I_aux.conjunto_lr0 = res_ir_a;
 							lr0.c.Add(I_aux);
-
-							// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
-							I_origen = new Destado();
-							foreach (Destado dst in lr0.c)
-								if (lr0.compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
-									I_origen = dst;
-
-							Transicion tr = new Transicion();
-							tr.simbolo_lr0 = x.simbolo;
-							tr.destado_origen = I_origen;
-							tr.destado_destino = I_aux;
-							transiciones.Add(tr);
 						}
+
+						// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
+						I_origen = new Destado();
+						foreach (Destado dst in lr0.c)
+							if (lr0.compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
+								I_origen = dst;
+
+						// Agrega la transicion, con el origen del que se está trabajando y el destino del que se repitió o se creó nuevo
+						Transicion tr = new Transicion();
+						tr.simbolo_lr0 = x.simbolo;
+						tr.destado_origen = I_origen;
+						tr.destado_destino = I_aux;
+						transiciones.Add(tr);
+					}
+				}
+				foreach (Simbolo_Gramatical x in lr0.G.noterminales)
+				{
+					band_repetido = false;
+					res_ir_a = lr0.ir_a(lr0.c[i], x);
+
+					if (res_ir_a != null) // Si no está vacío
+					{
+						// Busca si ya existe en C
+						foreach (Destado estado in lr0.c)
+							if (lr0.compara_ListaProducciones(res_ir_a, estado.conjunto_lr0))
+							{ // Si está repetido
+								band_repetido = true;
+								I_aux = estado;
+							}
+
+						if (!band_repetido) // Si no se repite, entonces lo agrega
+						{
+							I_aux = new Destado();
+							I_aux.id = "I" + id_destado.ToString();
+							id_destado++;
+							I_aux.conjunto_lr0 = res_ir_a;
+							lr0.c.Add(I_aux);
+						}
+
+						// Va y busca cual Destado es el que tiene los elementos ´que se están recorriendo
+						I_origen = new Destado();
+						foreach (Destado dst in lr0.c)
+							if (lr0.compara_ListaProducciones(dst.conjunto_lr0, lr0.c[i].conjunto_lr0))
+								I_origen = dst;
+
+						// Agrega la transicion, con el origen del que se está trabajando y el destino del que se repitió o se creó nuevo
+						Transicion tr = new Transicion();
+						tr.simbolo_lr0 = x.simbolo;
+						tr.destado_origen = I_origen;
+						tr.destado_destino = I_aux;
+						transiciones.Add(tr);
 					}
 				}
 			}
@@ -468,9 +484,9 @@ namespace Compiladores_proyecto
 			{
 				sc_estado = estado.id += "\n";
 				foreach (List<Simbolo_Gramatical> prod in estado.conjunto_lr0)
-                {
+				{
 					sc_prod = prod[0].simbolo + " -> ";
-					for(int i = 1; i < prod.Count; i++)
+					for (int i = 1; i < prod.Count; i++)
 						sc_prod += prod[i].simbolo + " ";
 					sc_estado += sc_prod + "\n";
 				}
@@ -486,12 +502,12 @@ namespace Compiladores_proyecto
 			string[,] matriz;
 			List<string> alfabeto = new List<string>();
 			foreach (Simbolo_Gramatical x in lr0.G.noterminales)
-            {
+			{
 				tabla_transiciones_LR.Columns.Add(x.simbolo, x.simbolo);
 				alfabeto.Add(x.simbolo);
 			}
 			foreach (Simbolo_Gramatical x in lr0.G.terminales)
-            {
+			{
 				tabla_transiciones_LR.Columns.Add(x.simbolo, x.simbolo);
 				alfabeto.Add(x.simbolo);
 			}
@@ -545,7 +561,6 @@ namespace Compiladores_proyecto
 							aux = lr.analisis_accion_relga1(elemento, lr.c[i], lr.G.terminales[j], transiciones);
 							if (aux != "")
 								matriz_accion[i, j] = aux;
-							//MessageBox.Show(matriz_accion[i, j]);
 						}
 					}
 
@@ -562,7 +577,6 @@ namespace Compiladores_proyecto
 						}
 					}
 
-
 					// Checa la regla 3
 					if(matriz_accion[i, lr.G.terminales.Count] == null || matriz_accion[i, lr.G.terminales.Count] == "")
                     {
@@ -574,25 +588,36 @@ namespace Compiladores_proyecto
 					// se usa directamente "lr.G.terminales.Count" porque ese es el indice en el que se encuentra $ al momento de crear la matriz
 				}
 			}
-			////Imprime matriz asi alv
-			//string ultra = "";
-			//string meh = "";
-			//for(int i = 0; i < lr.c.Count; i++)
-   //         {
-			//	meh = "";
-			//	for(int j = 0; j < lr.G.terminales.Count + 1; j++)
-   //             {
-			//		MessageBox.Show(matriz_accion[i, j]);
-   //             }
-			//	ultra += meh + "\n";
-   //         }
-			
+
+			// Llena matriz I_RA
+			for(int i = 0; i < lr.c.Count; i++) // Recorre los estados
+            {
+				for(int j = 0; j < lr.G.noterminales.Count; j++) // Recorre los no terminales
+                {
+					matriz_ira[i, j] = ""; // La setea por si no encuentra nada
+					foreach(Transicion t in transiciones) // Recorre las transiciones para llenar matriz con el destado destino
+                    {
+						// Si el estado origen y el simbolo embonan con el estado de c y el no terminal, entonces en esa coordenada de la matriz va el estado destino
+						if(t.destado_origen == lr.c[i] && t.simbolo_lr0 == lr.G.noterminales[j].simbolo)
+							matriz_ira[i, j] = t.destado_destino.id.Trim('I'); // Le quita el caracter I para solo dejar el numero
+                    }
+                }
+			}
+
+			ACCION = new string[lr.c.Count, lr.G.terminales.Count + 1]; // El +1 es por el $
+			IRA = new string[lr.c.Count, lr.G.noterminales.Count];
+			ACCION = matriz_accion;
+			IRA = matriz_ira;
 
 
-			// Llena datagrid con la amtriz ACCION
 			int cont = 0, cont2 = 0;
 			string[] row;
 			List<string> alfabeto = new List<string>();
+
+			// Llena datagrid con la matriz ACCION
+			cont = 0;
+			cont2 = 0;
+			alfabeto = new List<string>();
 			foreach (Simbolo_Gramatical x in lr.G.terminales)
 				alfabeto.Add(x.simbolo);
 			alfabeto.Add("$");
@@ -612,9 +637,27 @@ namespace Compiladores_proyecto
 				Tabla_Analisis_LR0_ACCION.Rows.Add(row);
 			}
 
-
-			// Llena ir_A
-
+			// Llena datagrid con la matriz IR_A
+			cont = 0;
+			cont2 = 0;
+			alfabeto = new List<string>();
+			foreach (Simbolo_Gramatical x in lr.G.noterminales)
+				alfabeto.Add(x.simbolo);
+			cont = 0;
+			foreach (Destado es in lr.c)
+			{
+				cont2 = 0;
+				row = new string[alfabeto.Count + 1];
+				row[cont2] = es.id.ToString();
+				cont2++;
+				for (int j = 0; j < alfabeto.Count; j++)
+				{
+					row[cont2] = matriz_ira[cont, j];
+					cont2++;
+				}
+				cont++;
+				Tabla_Analisis_LR0_IRA.Rows.Add(row);
+			}
 		}
 
 		public int obten_indice_terminal(string terminal, List<Simbolo_Gramatical> terminales)
@@ -657,6 +700,183 @@ namespace Compiladores_proyecto
 			}
 			return matriz;
 		}
+
+		private void Boton_Analizador_TINY_Click(object sender, EventArgs e)
+		{
+			Text_Box_Console_Analisis.Text = "";
+			limpia_grid_TOKENS();
+			limpia_grid_LR0();
+			limpia_grid_TablaAnalisis_LR0();
+
+			Lenguaje_Tiny tny = new Lenguaje_Tiny();
+			string[] row = new string[2];
+			bool band_continua = true;
+
+			if(Text_Box.Text != "")
+            {
+				if(TextBox_id.Text != "" && TextBox_Num.Text != "")
+                {
+					// Setea los datos necesarios para crear y verificar los tokens del codigo
+					tny.setea_palabras_reservadas();
+					tny.genera_afds(TextBox_id.Text, TextBox_Num.Text);
+					tny.genera_tokens(Text_Box.Text);
+					tny.verifica_tokens();
+
+					// Se tiene que rellenar el grid
+					foreach (Token t in tny.tokens)
+					{
+						row[0] = t.nombre;
+						row[1] = t.lexema;
+						Tabla_Tokens.Rows.Add(row);
+						row = new string[2];
+					}
+
+					// Verifica que hubo errores lexicos
+					foreach (Token t in tny.tokens)
+					{
+						if (t.nombre == "Error léxico") // Si hay al menos un token que sea un error, entones ya no va a continuar
+						{
+							band_continua = false;
+							// Se imprime en la "consola"
+							Text_Box_Console_Analisis.Text += "Error léxico - Linea: " + t.linea.ToString() + ", " + t.lexema + " no se reconoce\n";
+						}
+					}
+
+					if (band_continua) // Solo continua si no se encontraron errores lexicos
+					{
+						// Si llegó a este punto sin errores, tambien se imprime en "consola"
+						Text_Box_Console_Analisis.Text += "No se encontraron errores léxicos\n";
+
+						// Se hace el analisis sintactico
+						analisis_sintactico();
+						analisis_lr0(tny.tokens);
+					}
+				}
+                else
+                {
+					MessageBox.Show("Los campos de Numero e Identificador no pueden estar vacios.");
+				}
+			}
+            else
+				MessageBox.Show("Por favor, primero abre un código TINY");
+		}
+
+		public void analisis_lr0(List<Token> tokens)
+        {
+			List<Token> w = tokens; // w
+			int w_index = 0; // Indice de w
+			int tree_index = -1; // Indice del arbol
+			int s = -1;
+			string a = "";
+			int t = 0;
+			string celda = "";
+			int abs_prod = 0;
+			int num_prod = 0;
+			TreeNode trn = new TreeNode();
+			TreeNode trn2 = new TreeNode();
+
+			// Crea la base del arbol
+			Arbol_sintactico.Nodes.Clear();
+			foreach (Token tk in w)
+				Arbol_sintactico.Nodes.Add(tk.lexema);
+
+			// Se le añade $ a w
+			Token tok = new Token();
+			tok.nombre = "$";
+			w.Add(tok);
+
+			// Crea e inicializa la pila
+			Stack<int> pila = new Stack<int>();
+			pila.Push(0);
+
+            while (true)
+            {
+                a = w[w_index].nombre;
+                s = pila.Peek();
+                celda = busca_celda_matriz(ACCION, s, a, "ACCION");
+
+                if (celda != "" && celda != null) // Si no regresó un error
+                {
+                    switch (celda[0]) // Busca solamente el primer caracter del resultado (d, r, a)
+                    {
+                        case 'd':
+                            t = Int32.Parse(celda.Trim('d'));
+                            pila.Push(t); // Inserta a la pila el puro numero, sin la d
+                            w_index++; // Avanzar el apuntador de w
+
+							tree_index++; // Se desplaza el arbol a la derecha
+                            break;
+                        case 'r':
+                            // Tiene que ir a buscar la produccion por el numero.
+                            num_prod = Int32.Parse(celda.Trim('r')); // saca el numero de la produccion
+                            abs_prod = 0;
+							trn = new TreeNode(lr0.G.producciones[num_prod][0].simbolo); // Se crea el nodo padre que va a contener a los hijos de la reduccion
+
+							// De la lista de producciones la [0] siempre va a ser la aumentada, asi que no hay problema por buscarla directamente con producciones[]
+							for (int i = 1; i < lr0.G.producciones[num_prod].Count; i++) // Empieza en 1 porque 0 es A (A -> alskdjASD)
+                                abs_prod++; // Suma el absoluto del cuerpo de la produccion
+
+							// Recorre el indice para insertar en orden los hijos
+							tree_index -= (abs_prod -1); // -1 para que no se reste demás puesto que son direcciones de 0-n
+							for (int c = 0; c < abs_prod; c++) // Saca ese numero de elementos de la pila
+                            {
+								trn2 = (TreeNode) Arbol_sintactico.Nodes[tree_index].Clone();
+								trn.Nodes.Add(trn2); // Le pone los hijos al nodo padre
+                                pila.Pop();
+								Arbol_sintactico.Nodes.RemoveAt(tree_index);
+                            }
+
+                            t = pila.Peek(); // Setea t al tope de la pila
+                            // Se tiene que insertar el resultado de IR_A[t,A]
+                            pila.Push(Int32.Parse(busca_celda_matriz(IRA, t, lr0.G.producciones[num_prod][0].simbolo, "IR_A")));
+							Arbol_sintactico.Nodes.Insert(tree_index, trn);
+
+							break;
+                        case 'a':
+                            Text_Box_Console_Analisis.Text += "Todo correcto.";
+							Arbol_sintactico.ExpandAll();
+							return;
+                    }
+                }
+                else // Regreso un error, detener todo
+                {
+                    Text_Box_Console_Analisis.Text += "Error sintáctico - No se puede continuar con el análisis.";
+					Arbol_sintactico.ExpandAll();
+					return;
+                }
+            }
+        }
+
+		public string busca_celda_matriz(string[,] m, int s, string a, string tbl)
+        {
+			// tbl sirve para ver que se va a usar, si los terminales de la tabla ACCION o los no terminales de la tabla IR_a
+			string celda = "";
+			List<Simbolo_Gramatical> aux = new List<Simbolo_Gramatical>();
+
+			if(tbl == "ACCION") // Se obtienen los terminales de la tabla de accion + el $ que no lo tiene por default
+			{
+				Simbolo_Gramatical pesos = new Simbolo_Gramatical("$", "$");
+				aux = lr0.G.terminales;
+				aux.Add(pesos);
+			}
+			else{
+				if (tbl == "IR_A") // Se obtienen los no temrinales de la tabla de ir_a
+					aux = lr0.G.noterminales;
+            }
+
+			// Solamente se recorren las columnas porque para el indice del renglon es directamente s
+			// Las columnas son la lista de terminales o no terminales
+			for (int t = 0; t < aux.Count; t++)
+            {
+				if(aux[t].simbolo == a) // Encuentra a
+                {
+					celda = m[s, t];
+					break;
+                }
+            }
+
+			return celda;
+        }
 
 		public void limpia_grid_AFN()
         {

@@ -31,12 +31,22 @@ namespace Compiladores_proyecto
             simbolo_aux = new Simbolo_Gramatical("programa", "NT");
             produccion_amentada.Add(simbolo_aux);
 
-            //// Se agrega manualmente la produccion aumentada (programa' -> .programa)
+
+
             //simbolo_aux = new Simbolo_Gramatical("S'", "NT");
             //produccion_amentada.Add(simbolo_aux);
             //simbolo_aux = new Simbolo_Gramatical(".", "PUNTO");
             //produccion_amentada.Add(simbolo_aux);
             //simbolo_aux = new Simbolo_Gramatical("S", "NT");
+            //produccion_amentada.Add(simbolo_aux);
+
+
+
+            //simbolo_aux = new Simbolo_Gramatical("P'", "NT");
+            //produccion_amentada.Add(simbolo_aux);
+            //simbolo_aux = new Simbolo_Gramatical(".", "PUNTO");
+            //produccion_amentada.Add(simbolo_aux);
+            //simbolo_aux = new Simbolo_Gramatical("P", "NT");
             //produccion_amentada.Add(simbolo_aux);
 
 
@@ -279,7 +289,6 @@ namespace Compiladores_proyecto
                         k = j;
                         return k;
                     }
-                       
                 }
                 else
                     band = false;

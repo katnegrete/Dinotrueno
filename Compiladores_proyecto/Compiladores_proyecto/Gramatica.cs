@@ -19,6 +19,64 @@ namespace Compiladores_proyecto
 
             // PRODUCCIONES:
 
+
+            // Gramatica meh de P
+
+            //aux = new Simbolo_Gramatical("P", "NT");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("a", "T");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("P", "NT");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("a", "T");
+            //lista_aux.Add(aux);
+            //producciones.Add(lista_aux);
+            //lista_aux = new List<Simbolo_Gramatical>();
+
+            //aux = new Simbolo_Gramatical("P", "NT");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("b", "T");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("P", "NT");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("b", "T");
+            //lista_aux.Add(aux);
+            //producciones.Add(lista_aux);
+            //lista_aux = new List<Simbolo_Gramatical>();
+
+            //aux = new Simbolo_Gramatical("P", "NT");
+            //lista_aux.Add(aux);
+            //aux = new Simbolo_Gramatical("c", "T");
+            //lista_aux.Add(aux);
+            //producciones.Add(lista_aux);
+            //lista_aux = new List<Simbolo_Gramatical>();
+
+            //aux = new Simbolo_Gramatical("P", "NT");
+            //aux.primeros.Add("a");
+            //aux.primeros.Add("b");
+            //aux.primeros.Add("c");
+            //aux.siguientes.Add("$");
+            //aux.siguientes.Add("a");
+            //aux.siguientes.Add("b");
+            //noterminales.Add(aux);
+
+            //aux = new Simbolo_Gramatical("a", "T");
+            //aux.primeros.Add("a");
+            //terminales.Add(aux);
+            //aux = new Simbolo_Gramatical("b", "T");
+            //aux.primeros.Add("b");
+            //terminales.Add(aux);
+            //aux = new Simbolo_Gramatical("c", "T");
+            //aux.primeros.Add("c");
+            //terminales.Add(aux);
+
+
+
+
+
+
+            // Gramatica meh de S
+
             //aux = new Simbolo_Gramatical("S", "NT");
             //lista_aux.Add(aux);
             //aux = new Simbolo_Gramatical("(", "T");
@@ -85,6 +143,13 @@ namespace Compiladores_proyecto
             //terminales.Add(aux);
 
 
+
+
+
+
+
+
+            //TINY
 
             // programa -> secuencia-sent
             aux = new Simbolo_Gramatical("programa", "NT");
