@@ -707,6 +707,7 @@ namespace Compiladores_proyecto
 			limpia_grid_TOKENS();
 			limpia_grid_LR0();
 			limpia_grid_TablaAnalisis_LR0();
+			Arbol_sintactico.Nodes.Clear();
 
 			Lenguaje_Tiny tny = new Lenguaje_Tiny();
 			string[] row = new string[2];
@@ -778,7 +779,7 @@ namespace Compiladores_proyecto
 			// Crea la base del arbol
 			Arbol_sintactico.Nodes.Clear();
 			foreach (Token tk in w)
-				Arbol_sintactico.Nodes.Add(tk.lexema);
+				Arbol_sintactico.Nodes.Add(tk.nombre);
 
 			// Se le añade $ a w
 			Token tok = new Token();
@@ -808,7 +809,7 @@ namespace Compiladores_proyecto
                             break;
                         case 'r':
                             // Tiene que ir a buscar la produccion por el numero.
-                            num_prod = Int32.Parse(celda.Trim('r')); // saca el numero de la produccion
+                            num_prod = Int32.Parse(celda.Trim('r')); // saca el numero de la produccion  A -> a
                             abs_prod = 0;
 							trn = new TreeNode(lr0.G.producciones[num_prod][0].simbolo); // Se crea el nodo padre que va a contener a los hijos de la reduccion
 
